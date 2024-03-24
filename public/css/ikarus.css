@@ -1,0 +1,7 @@
+.editable-cell 
+{
+    cursor: pointer;
+    width: 5px; /* Válaszd meg a kívánt szélességet */
+    height: 20px; /* Válaszd meg a kívánt magasságot */
+    text-align: center;
+}

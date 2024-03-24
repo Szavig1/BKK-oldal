@@ -15,6 +15,11 @@ var server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+function matchTripIdToTripHeadsign(tripId, trips) {
+    const trip = trips[tripId];
+    return trip ? trip.tripHeadsign : null;
+}
+
 app.get("/index", (req, res) => {
     res.render("index");
 });
@@ -26,21 +31,24 @@ app.get("/ikarus", async (req, res) => {
         {
             params: 
             {
-                tripId: 'BKK_C77874420',
+                tripId: 'BKK_C77217453',
                 ifModifiedSince: 1625685137,
+                appVerison: '1.1.abc',
+                version: 2,
                 includeReferences: 'true',
-                dialect: 'true',
-                key: apiKey
+                key: 'acfaf15f-e56c-414d-8d49-493b8863e638'
             }
         });
 
         const vehiclesData = vehicleResponse.data;
 
         const vehicles = vehiclesData.data.list.map((vehicle) => ({
+            vehicleId: vehicle.vehicleId,
+            tripId: vehicle.tripId,
             licensePlate: vehicle.licensePlate,
             label: vehicle.label,
             currentStop: vehiclesData.data.references.stops.name,
-            tripHeadsign: vehiclesData.data.references.trips.tripHeadsign,
+            tripHeadsign: matchTripIdToTripHeadsign(vehicle.tripId, vehiclesData.data.references.trips),
             routeId: vehiclesData.data.references.trips.routeId
         }));
         
