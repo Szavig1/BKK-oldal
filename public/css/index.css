@@ -1,0 +1,29 @@
+.container 
+{
+    text-align: center; /* A szöveg középre igazítása */
+}
+
+.cim-container 
+{
+    display: inline-block; /* Biztosítja, hogy a kép és a cím egymás mellett legyenek */
+}
+
+.cim-container img 
+{
+    float: left; /* A kép balra helyezése */
+    height: 68px;
+    margin-right: 10px; /* Távolság beállítása a kép és a szöveg között */
+}
+
+.cim 
+{
+    font-size: 50px;
+    color: #4C0E5F;
+}
+
+p
+{
+    text-align: center;
+    font-size: 50px;
+    color: #4C0E5F;
+}
