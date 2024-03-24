@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const axios = require('axios');
-const apiKey = 'acfaf15f-e56c-414d-8d49-493b8863e638';
+require('dotenv').config();
+const apiKey = process.env.API_KEY;
 
 app.use(express.json());
 app.set("view engine", "ejs");
@@ -14,27 +15,40 @@ var server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-app.get(".", (req, res) => {
+app.get("/index", (req, res) => {
     res.render("index");
 });
 
-app.get("/ikarus", (req, res) => {
-    res.render("ikarus");
+app.get("/ikarus", async (req, res) => {
     try
     {
-        const valasz = await axios.get('https://futar.bkk.hu/api/query/v1/ws/otp/api/where/vehicle-for-trip', 
+        const vehicleResponse = await axios.get('https://futar.bkk.hu/api/query/v1/ws/otp/api/where/vehicle-for-trip', 
         {
             params: 
             {
                 tripId: 'BKK_C77874420',
                 ifModifiedSince: 1625685137,
                 includeReferences: 'true',
-                dialect: 'true'
+                dialect: 'true',
+                key: apiKey
             }
         });
-    }
-    catch
-    {
 
+        const vehiclesData = vehicleResponse.data;
+
+        const vehicles = vehiclesData.data.list.map((vehicle) => ({
+            licensePlate: vehicle.licensePlate,
+            label: vehicle.label,
+            currentStop: vehiclesData.data.references.stops.name,
+            tripHeadsign: vehiclesData.data.references.trips.tripHeadsign,
+            routeId: vehiclesData.data.references.trips.routeId
+        }));
+        
+        res.render("ikarus", {vehicles});
+    }
+    catch (error)
+    {
+        console.error('Error fetching data:', error);
+        res.status(500).send('Error fetching data');
     }
 });
